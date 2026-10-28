@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#11130f">
+  <title>取流台｜公开视频下载与处理</title>
+  <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg?v=1">
+  <link rel="shortcut icon" href="./assets/favicon.svg?v=1">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#workspace">跳到工作区</a>
+
+  <svg class="icon-sprite" aria-hidden="true">
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m7 10 5 5 5-5"></path><path d="M12 15V3"></path></symbol>
+    <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></symbol>
+    <symbol id="i-code" viewBox="0 0 24 24"><path d="m16 18 6-6-6-6"></path><path d="m8 6-6 6 6 6"></path></symbol>
+    <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h13"></path><path d="M8 12h13"></path><path d="M8 18h13"></path><path d="M3 6h.01"></path><path d="M3 12h.01"></path><path d="M3 18h.01"></path></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="m12 18 3-3"></path><path d="m9 15 3 3"></path><path d="M12 18v-6"></path></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path></symbol>
+    <symbol id="i-external" viewBox="0 0 24 24"><path d="M15 3h6v6"></path><path d="M10 14 21 3"></path><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"></path></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11a8.1 8.1 0 0 0-15.5-2M4 4v5h5"></path><path d="M4 13a8.1 8.1 0 0 0 15.5 2M20 20v-5h-5"></path></symbol>
+    <symbol id="i-image" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="m21 15-5-5L5 21"></path></symbol>
+    <symbol id="i-audio" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></symbol>
+    <symbol id="i-text" viewBox="0 0 24 24"><path d="M4 6h16"></path><path d="M4 12h16"></path><path d="M4 18h10"></path></symbol>
+  </svg>
+
+  <aside class="service-gate" id="serviceGate" role="alert" hidden>
+    <div>
+      <strong>当前是文件预览，下载服务尚未连接</strong>
+      <p>请双击项目根目录的 <code>start_web.cmd</code>，再使用浏览器自动打开的本地地址。</p>
+    </div>
+    <button class="secondary-action compact" id="copyStartCommand" type="button">复制启动命令</button>
+  </aside>
+
+  <header class="topbar">
+    <a class="brand" href="./" aria-label="取流台首页">
+      <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span><strong>取流台</strong><small>本地视频工作台</small></span>
+    </a>
+
+    <nav class="workspace-tabs" role="tablist" aria-label="工作视图">
+      <button class="tab-button is-active" type="button" role="tab" aria-selected="true" aria-controls="panel-download" tabindex="0" data-tab="download">
+        <svg class="icon"><use href="#i-download"></use></svg><span>下载</span>
+      </button>
+      <button class="tab-button" type="button" role="tab" aria-selected="false" aria-controls="panel-research" tabindex="-1" data-tab="research">
+        <svg class="icon"><use href="#i-code"></use></svg><span>格式与直链</span>
+      </button>
+      <button class="tab-button" type="button" role="tab" aria-selected="false" aria-controls="panel-tasks" tabindex="-1" data-tab="tasks">
+        <svg class="icon"><use href="#i-list"></use></svg><span>任务</span><span class="task-count" id="taskCount">0</span>
+      </button>
+    </nav>
+
+    <div class="runtime" id="runtimeStatus" role="status">
+      <span class="runtime-dot" aria-hidden="true"></span>
+      <span id="runtimeText">正在连接服务</span>
+    </div>
+  </header>
+
+  <main id="workspace">
+    <section class="intake" aria-labelledby="page-title">
+      <div class="intake-heading">
+        <p class="eyebrow"><span></span>在本机解析与处理</p>
+        <h1 id="page-title">公开视频，一站式保存与处理</h1>
+        <p class="intake-copy">粘贴页面链接，选择清晰度并下载。文件就绪后可继续提取首帧、导出音频或生成文字稿。</p>
+      </div>
+
+      <form id="inspectForm" class="url-form">
+        <label class="command-label" for="videoUrl">视频页面链接</label>
+        <div class="url-field">
+          <svg class="icon" aria-hidden="true"><use href="#i-link"></use></svg>
+          <input id="videoUrl" name="url" type="url" inputmode="url" autocomplete="url" spellcheck="false" placeholder="粘贴 B 站、YouTube、X/Twitter 或其他公开视频链接" aria-describedby="urlHelp" required>
+          <button class="primary-action" id="inspectButton" type="submit">
+            <svg class="icon" aria-hidden="true"><use href="#i-search"></use></svg>
+            <span>解析视频</span>
+          </button>
+        </div>
+        <div class="url-meta" id="urlHelp">
+          <p>支持 B 站、YouTube、X/Twitter 及 yt-dlp 兼容站点</p>
+          <p class="legal-line">仅处理你有权保存的公开内容，不用于绕过 DRM、付费墙或访问控制。</p>
+        </div>
+      </form>
+    </section>
+
+    <section class="transfer-track" id="transferTrack" data-stage="idle" aria-live="polite" aria-atomic="true">
+      <div class="track-status-wrap">
+        <span class="status-orb" aria-hidden="true"></span>
+        <div><strong>当前状态</strong><p id="trackStatus">等待输入公开视频链接</p></div>
+      </div>
+      <ol aria-label="处理进度">
+        <li data-step="source"><span>1</span><strong>提供链接</strong></li>
+        <li data-step="inspect"><span>2</span><strong>解析格式</strong></li>
+        <li data-step="transfer"><span>3</span><strong>下载合并</strong></li>
+        <li data-step="file"><span>4</span><strong>本地处理</strong></li>
+      </ol>
+      <div class="track-line" aria-hidden="true"><span class="track-progress"></span><span class="track-packet"></span></div>
+    </section>
+
+    <section class="workspace-panel is-active" id="panel-download" role="tabpanel" tabindex="0" data-panel="download">
+      <div class="download-layout">
+        <div class="preview-zone">
+          <canvas id="signalCanvas" aria-hidden="true"></canvas>
+          <div class="preview-empty" id="previewEmpty">
+            <span class="empty-icon" aria-hidden="true"><svg class="icon"><use href="#i-link"></use></svg></span>
+            <h2>解析结果会显示在这里</h2>
+            <p>输入公开视频页面链接，系统会识别封面、标题与可用格式。</p>
+            <div class="empty-signal" aria-hidden="true"><span>识别来源</span><i></i><span>选择格式</span><i></i><span>保存文件</span></div>
+          </div>
+
+          <figure class="video-preview" id="videoPreview" hidden>
+            <div class="thumbnail-stage">
+              <img id="videoThumbnail" alt="视频封面">
+              <span class="duration-badge" id="videoDuration">-</span>
+            </div>
+            <figcaption>
+              <p class="source-label" id="videoSource">-</p>
+              <h2 id="videoTitle">-</h2>
+              <p id="videoUploader">-</p>
+            </figcaption>
+          </figure>
+        </div>
+
+        <aside class="download-controls" aria-labelledby="download-settings-title">
+          <div class="section-heading">
+            <span class="section-icon" aria-hidden="true"><svg class="icon"><use href="#i-download"></use></svg></span>
+            <div><p class="eyebrow">下载设置</p><h2 id="download-settings-title">选择输出文件</h2></div>
+          </div>
+
+          <div class="control-grid">
+            <div class="field-group">
+              <label class="field-label" for="qualitySelect">清晰度</label>
+              <select id="qualitySelect">
+                <option value="best">最佳可用</option>
+                <option value="1080p">最高 1080p</option>
+                <option value="720p">最高 720p</option>
+                <option value="480p">最高 480p</option>
+                <option value="audio">仅音频</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="mergeFormat">文件容器</label>
+              <select id="mergeFormat">
+                <option value="auto">自动选择</option>
+                <option value="mp4">MP4</option>
+                <option value="mkv">MKV</option>
+                <option value="webm">WebM</option>
+              </select>
+            </div>
+          </div>
+
+          <dl class="source-facts" aria-label="运行环境">
+            <div><dt>解析器</dt><dd id="factExtractor">等待解析</dd></div>
+            <div><dt>可用格式</dt><dd id="factFormats">-</dd></div>
+            <div><dt>音视频处理</dt><dd id="factFfmpeg">检测中</dd></div>
+            <div><dt>本地转写</dt><dd id="factWhisper">检测中</dd></div>
+          </dl>
+
+          <label class="rights-check">
+            <input id="rightsConfirm" type="checkbox">
+            <span aria-hidden="true"><svg class="icon"><use href="#i-check"></use></svg></span>
+            <em>我确认有权保存和处理此公开内容</em>
+          </label>
+
+          <button class="download-button" id="startDownload" type="button" disabled>
+            <svg class="icon" aria-hidden="true"><use href="#i-download"></use></svg>
+            <span>加入下载队列</span>
+          </button>
+          <p class="control-note" id="downloadNote">先解析一个公开视频链接。</p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="workspace-panel" id="panel-research" role="tabpanel" tabindex="0" data-panel="research" hidden>
+      <div class="research-toolbar">
+        <div class="panel-title"><span class="section-icon"><svg class="icon"><use href="#i-code"></use></svg></span><div><p class="eyebrow">研发视图</p><h2>格式与临时直链</h2><p>查看解析器返回的媒体格式，按选择器提取临时地址。</p></div></div>
+        <div class="selector-actions">
+          <label for="formatSelector">格式选择器</label>
+          <input id="formatSelector" value="bv*+ba/b" spellcheck="false">
+          <button class="secondary-action" id="resolveLinks" type="button" disabled>
+            <svg class="icon"><use href="#i-link"></use></svg><span>解析直链</span>
+          </button>
+          <button class="icon-button" id="exportLinks" type="button" title="导出直链 JSON" aria-label="导出直链 JSON" disabled>
+            <svg class="icon"><use href="#i-file"></use></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="research-layout">
+        <div class="format-browser">
+          <div class="table-heading"><div><h3>可用格式</h3><p>选择一项即可填入格式选择器</p></div><span id="formatCount">0</span></div>
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>ID</th><th>类型</th><th>分辨率</th><th>容器</th><th>编码</th><th>体积</th><th><span class="sr-only">操作</span></th></tr></thead>
+              <tbody id="formatTableBody"></tbody>
+            </table>
+          </div>
+          <div class="table-empty" id="formatEmpty"><svg class="icon"><use href="#i-list"></use></svg><p>解析视频后显示可用格式</p></div>
+        </div>
+        <div class="link-output">
+          <div class="table-heading"><div><h3>媒体直链</h3><p>地址可能过期，并可能依赖请求头</p></div><span id="linkCount">0</span></div>
+          <div class="link-list" id="linkList"></div>
+          <div class="table-empty" id="linkEmpty"><svg class="icon"><use href="#i-link"></use></svg><p>选择格式并解析直链</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="workspace-panel" id="panel-tasks" role="tabpanel" tabindex="0" data-panel="tasks" hidden>
+      <div class="task-toolbar">
+        <div class="panel-title"><span class="section-icon"><svg class="icon"><use href="#i-list"></use></svg></span><div><p class="eyebrow">本地队列</p><h2>下载与处理任务</h2><p>下载完成后，可继续生成首帧、音频与文字稿。</p></div></div>
+        <button class="secondary-action compact" id="clearFinished" type="button" disabled>
+          <svg class="icon"><use href="#i-trash"></use></svg><span>清理已结束</span>
+        </button>
+      </div>
+      <div class="task-list" id="taskList"></div>
+      <div class="task-empty" id="taskEmpty">
+        <span class="empty-icon"><svg class="icon"><use href="#i-download"></use></svg></span>
+        <div><h3>还没有下载任务</h3><p>解析视频并选择输出后，任务会出现在这里。</p></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>核心能力来自 <a href="https://github.com/yt-dlp/yt-dlp" target="_blank" rel="noreferrer">yt-dlp <svg class="icon"><use href="#i-external"></use></svg></a>、<a href="https://github.com/FFmpeg/FFmpeg" target="_blank" rel="noreferrer">FFmpeg <svg class="icon"><use href="#i-external"></use></svg></a> 与 <a href="https://github.com/SYSTRAN/faster-whisper" target="_blank" rel="noreferrer">faster-whisper <svg class="icon"><use href="#i-external"></use></svg></a></p>
+    <p><span class="runtime-dot is-static"></span>仅在本机运行</p>
+  </footer>
+
+  <div class="toast-region" id="toastRegion" aria-live="polite" aria-atomic="true"></div>
+  <script src="./app.js" defer></script>
+</body>
+</html>
